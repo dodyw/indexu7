@@ -2,6 +2,8 @@
 Indexu Database Migration
 From: Indexu 5.4
 To  : Indexu Deluxe 2.4
+
+V.1.0 ~ August 25, 2011
 =========================
 
 Use this script to upgrade database from Indexu 5.4 to Indexu Deluxe 2.4.

@@ -2,6 +2,8 @@
 Indexu Database Migration
 From: Indexu Deluxe 2.4
 To  : Indexu 7.0
+
+V.1.0 ~ August 25, 2011
 =========================
 
 Use this script to upgrade database from Indexu Deluxe 2.4 to Indexu 7.0.
