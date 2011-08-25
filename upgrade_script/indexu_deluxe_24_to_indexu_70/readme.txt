@@ -7,6 +7,7 @@ V.1.0 ~ August 25, 2011
 =========================
 
 Use this script to upgrade database from Indexu Deluxe 2.4 to Indexu 7.0.
+Run this script before perform Indexu 7.0 installation. 
 
   
 INSTALLATION
@@ -17,19 +18,13 @@ INSTALLATION
 
       $db_user = 'root';
       $db_pass = 'root';
-      $db_name = 'indexu5';
+      $db_name = 'indexu';
       $db_host = 'localhost'; 
+            
+3) Upload indexu_54_to_indexu_deluxe_24 folder. This script is independent from indexu installation, feel free to upload in any locations.
 
-3) Fill the directory information from application.php file.
+4) Run the index.php from browser.
 
-      $site_url  = "http://www.indexu5.lo";
-      $base_path = "/www/indexu5/";
-      $site_name = "indexu5 demo";
-      
-4) Upload indexu_54_to_indexu_deluxe_24 folder. This script is independent from indexu installation, feel free to upload in any locations.
-
-5) Run the index.php from browser.
-
-
+5) After database updated, continue with Indexu 7.0 installation. 
 
 If you have any problems or need other indexu version, send me an email at support@nicecoder.com
