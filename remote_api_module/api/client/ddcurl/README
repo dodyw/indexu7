@@ -1,0 +1,15 @@
+  /************************************************
+  ddcurl library
+  by Dody Rachmat Wicaksono (dodyrw@gmail.com)
+
+  version 1.0
+  Nov 26 2010
+  ************************************************/
+  
+  ddcurl is a set of php functions to simplify CURL command.
+  In most case, we use curl to fetch data from the website.
+  Sometimes this process need us to POST form data, login and
+  maintain web session. ddcurl offer a wrapper of a series of 
+  CURL command to make it easy and fun!
+  
+  Thank you for using ddcurl!
