@@ -1,0 +1,36 @@
+<?php if (count($lep->tpl["resources"])) : ?>
+
+  <ul>
+
+  <?php foreach ($lep->tpl["resources"] as $k => $v) { ?>
+
+    <li>
+      
+      <!-- title and link to detail page -->
+      <div>
+        <strong><a href="<?php print seo_detail_url2($v['res_id'], $v['title']) ?>"><b><?php print $v['title'] ?></b></a></strong>
+      </div>
+      
+      <!-- description, if exist -->
+      <div>
+        <?php if ($v['description']) : ?>
+          <p><?php print $v['description'] ?></p>
+        <?php endif; ?>      
+      </div>  
+
+      <!-- url -->
+      <div>
+        <?php print $v['url'] ?>
+      </div>
+    </li>
+    
+  <?php } ?>
+
+  </ul>
+
+  <?php else : ?>
+    <div>
+      There is no listing here. <a href="add.php">Click here</a> to submit a new listing here.
+    </div>
+
+<?php endif; ?>

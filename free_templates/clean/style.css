@@ -1,0 +1,43 @@
+/*tabbed content in detail page*/
+/*images, videos, articles, promos, events, products, documents, news*/
+
+.usual {
+    color: #111111;
+    margin: 8px auto;
+    width: 100%;
+}
+.usual li {
+    float: left;
+    list-style: none outside none;
+    
+}
+.usual ul {
+  padding: 0;
+}
+.usual ul a {
+    background: none repeat scroll 0 0 #aaa;
+    border:1px solid ccc;
+    color: #000;
+    display: block;
+    font: 10px Verdana;
+    margin: 1px 1px 1px 0;
+    padding: 6px 10px;
+    text-decoration: none !important;
+}
+.usual ul a:hover {
+    background: none repeat scroll 0 0 #111111;
+    color: #FFFFFF;
+}
+.usual ul a.selected {
+    background: none repeat scroll 0 0 #111;
+    border-bottom: 1px solid snow;
+    color: #fff;
+    cursor: default;
+    margin-bottom: 0;
+}
+.usual .tabbed {
+    background: none repeat scroll 0 0 #fff;
+    clear: left;
+    padding: 12px 10px;
+    border-top:1px solid #aaa;  
+}
