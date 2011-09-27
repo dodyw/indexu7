@@ -25,6 +25,14 @@ INSTALLATION
 
 4) Run the index.php from browser.
 
-5) After database updated, continue with Indexu 7.0 installation. 
+5) Now the database updated. Use phpmyadmin, edit configuration value in lep_config, edit url field to new location (http://www.domain.tld/). Make sure to add slash.
+
+6) Then reset the admin password to 'admin'. Edit lep_user, edit user 'admin', set the password to 
+   c3284d0f94606de1fd2af172aba15bf3
+   
+7) Login into indexu 7 admin panel. Update the category path (admin panel / categories / update category path).
+
+8) Update number of links (admin panel / links / update number of links).
+
 
 If you have any problems or need other indexu version, send me an email at support@nicecoder.com
