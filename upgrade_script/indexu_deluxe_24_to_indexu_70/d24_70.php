@@ -265,6 +265,7 @@
 
     foreach ($idx_fields as $k => $v) {
       $f_value = $row[$v];
+      $f_value = addslashes($row[$v]);
 
       if ($v=='keywords') {
         $f_name = 'tag';
