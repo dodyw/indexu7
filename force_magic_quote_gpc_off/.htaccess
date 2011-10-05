@@ -1,0 +1,20 @@
+IndexIgnore *
+
+RewriteEngine On
+
+RewriteRule ^tag/(.*)/page(.*).html tag.php?t=$1&p=$2
+RewriteRule ^tag/(.*) tag.php?t=$1
+
+RewriteRule ^page/(.*)/(.*).html c.php?id=$1
+RewriteRule ^privacy.html c.php?id=100
+
+RewriteRule ^detail/(.*)/(.*).html d.php?id=$1
+RewriteRule ^report/(.*)/(.*).html report.php?id=$1
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-l
+RewriteRule ^.* ./route.php
+
+## php config
+php_value magic_quotes_gpc off
