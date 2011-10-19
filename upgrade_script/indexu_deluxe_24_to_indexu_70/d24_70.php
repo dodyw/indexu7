@@ -263,26 +263,34 @@
 
     $query = "INSERT INTO `lep_resource` "; 
 
+    $fields_added = array();
+
     foreach ($idx_fields as $k => $v) {
-      $f_value = $row[$v];
-      $f_value = addslashes($row[$v]);
 
-      if ($v=='keywords') {
-        $f_name = 'tag';
-      }
-      elseif ($v=='contact_name') {
-        $f_name = 'owner_name';
-      }
-      elseif ($v=='date') {
-        $f_name = 'created_at';
-        $f_value = strtotime($v);
-      }
-      else {
-        $f_name = $v;
-      }
+      if (!in_array($v,$fields_added)) {
 
-      $query_fname[] = $f_name;
-      $query_fval[]  = "'".$f_value."'";
+        $f_value = $row[$v];
+        $f_value = addslashes($row[$v]);
+
+        if ($v=='keywords') {
+          $f_name = 'tag';
+        }
+        elseif ($v=='contact_name') {
+          $f_name = 'owner_name';
+        }
+        elseif ($v=='date') {
+          $f_name = 'created_at';
+          $f_value = strtotime($v);
+        }
+        else {
+          $f_name = $v;
+        }
+
+        $query_fname[] = $f_name;
+        $query_fval[]  = "'".$f_value."'";
+      }
+      
+      $fields_added[] = $f_name;
     }
 
     $query_fname[] = 'category_id';
