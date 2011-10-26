@@ -253,7 +253,14 @@
 
   // import links now
 
-  $query = "select * from idx_link";
+  // fasten the process
+  $query = "ALTER TABLE `lep_user` ADD UNIQUE `username` ( `username` )";
+  $result = mysql_query($query);
+
+  $query = "SELECT *
+            FROM idx_link AS a, idx_link_user AS b, lep_user AS c
+            WHERE a.link_id = b.link_id
+            AND c.username = b.username";
   $result = mysql_query($query);
 
   while ($row = mysql_fetch_assoc($result)) {
@@ -293,6 +300,9 @@
       $fields_added[] = $f_name;
     }
 
+    $query_fname[] = 'res_id';
+    $query_fval[] = $row['link_id'];
+
     $query_fname[] = 'category_id';
     $query_fval[] = $row['category_id'];
 
@@ -301,6 +311,17 @@
 
     $query_fname[] = 'listing_type';
     $query_fval[] = "'basic'";
+
+    $query_fname[] = 'status';
+    $query_fval[] = '1';
+
+    if ($row['suspended']=='') $row['suspended'] = '0';
+
+    $query_fname[] = 'suspended';
+    $query_fval[] = $row['suspended'];
+
+    $query_fname[] = 'user_id';
+    $query_fval[] = $row['user_id'];
 
     $query_temp2 = implode(',',$query_fname);
     $query_temp3 = implode(',',$query_fval);
@@ -315,9 +336,115 @@
 
   $debug .= "Link table imported. \n\n";
 
+
+  // import pending
+
+  $query = "SELECT *
+            FROM idx_link_temp AS a, idx_link_temp_user AS b, lep_user AS c
+            WHERE a.vid = b.vid
+            AND c.username = b.username";
+  $result = mysql_query($query);
+
+  while ($row = mysql_fetch_assoc($result)) {
+
+    unset($query_fname);
+    unset($query_fval);
+
+    $query = "INSERT INTO `lep_resource` "; 
+
+    $fields_added = array();
+
+    foreach ($idx_fields as $k => $v) {
+
+      if (!in_array($v,$fields_added)) {
+
+        $f_value = $row[$v];
+        $f_value = addslashes($row[$v]);
+
+        if ($v=='keywords') {
+          $f_name = 'tag';
+        }
+        elseif ($v=='contact_name') {
+          $f_name = 'owner_name';
+        }
+        elseif ($v=='date') {
+          $f_name = 'created_at';
+          $f_value = strtotime($v);
+        }
+        else {
+          $f_name = $v;
+        }
+
+        $query_fname[] = $f_name;
+        $query_fval[]  = "'".$f_value."'";
+      }
+      
+      $fields_added[] = $f_name;
+    }
+
+    $query_fname[] = 'res_id';
+    $query_fval[] = $row['link_id'];
+
+    $query_fname[] = 'category_id';
+    $query_fval[] = $row['category_id'];
+
+    $query_fname[] = 'hits';
+    $query_fval[] = $row['hits'];
+
+    $query_fname[] = 'listing_type';
+    $query_fval[] = "'basic'";
+
+    $query_fname[] = 'status';
+    $query_fval[] = '0';
+
+    if ($row['suspended']=='') $row['suspended'] = '0';
+
+    $query_fname[] = 'suspended';
+    $query_fval[] = $row['suspended'];
+
+    $query_fname[] = 'user_id';
+    $query_fval[] = $row['user_id'];
+
+    $query_temp2 = implode(',',$query_fname);
+    $query_temp3 = implode(',',$query_fval);
+
+    $query .= "($query_temp2) values ($query_temp3)";
+    $result2 = mysql_query($query);
+
+    ($result2) ? $res = "<span style='color:#00f;'>OK</span>" : $res = "<span style='color:#f00;'>FAILED</span>";
+    
+    $debug .= htmlentities($query) . "... $res \n\n";
+  }
+
+  $debug .= "Pending link table imported. \n\n";
+
+
+  // import active paid listing
+
+  $sp_expire = date('Y-m-d H:i:s');
+  $query = "SELECT * FROM `idx_paid_listing` where paid = '1' and expire > '$sp_expire'";
+  $result = mysql_query($query);
+
+  while ($row = mysql_fetch_assoc($result)) {
+    $expire = strtotime($row['expire']);
+    $query = "update lep_resource set featured = '1', featured_expired = '$expire' where res_id = '{$row['link_id']}'";
+    $result2 = mysql_query($query);
+
+    ($result2) ? $res = "<span style='color:#00f;'>OK</span>" : $res = "<span style='color:#f00;'>FAILED</span>";
+    
+    $debug .= htmlentities($query) . "... $res \n\n";
+  }
+
+  $debug .= "Paid listing imported. \n\n";
+
   
   // apply setting
   
+  $query = "update lep_config set value = '$website_url' where name = 'url'";
+  $result = mysql_query($query);
+
+  $debug .= "Done. \n\n";
+      
   // $theme_path             = $base_path . "themes/";
   // $admin_template_path    = $base_path . "admin_tpl/";
   // $plugin_path            = $base_path . "plugin/";
