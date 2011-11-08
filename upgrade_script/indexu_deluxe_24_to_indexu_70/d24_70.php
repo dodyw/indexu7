@@ -145,7 +145,7 @@
       '{$user_id}', 
       '{$row['review']}', 
       '{$row['status']}', 
-      '{$date}', 
+      '{$rev_date}', 
       '{$row['subject']}', 
       '{$row['rating']}'
       )
@@ -291,7 +291,7 @@
         }
         elseif ($v=='date') {
           $f_name = 'created_at';
-          $f_value = strtotime($v);
+          $f_value = strtotime($row[$v]);
         }
         else {
           $f_name = $v;
@@ -452,6 +452,10 @@
   }
 
   $debug .= "GooglePR imported. \n\n";
+
+  // fix email fields :
+
+  // update lep_resource set image = replace(image, "upload_files/", "")
 
   
   // apply setting
