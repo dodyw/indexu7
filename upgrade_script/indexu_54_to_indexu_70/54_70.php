@@ -66,6 +66,10 @@
 
   while ($row = mysql_fetch_assoc($result)) {
 
+    foreach ($row as $k => $v) {
+      $row[$k] = addslashes($row[$k]);
+    }
+
     $query = "insert  into `lep_category`(`category_id`,`parent_id`,`order_num`,`title`,`status`,`path`,`path_url`,`parents`,`description`,`meta_keyword`,`seo_title`,`has_child`,`num_res`,`created_at`) values ({$row['category_id']},{$row['parent_id']},{$row['order_num']},'{$row['name']}','1','','','','{$row['description']}','{$row['meta_keyword']}','','',0,'{$now}')";
 
     $result2 = mysql_query($query);
@@ -142,7 +146,7 @@
       '{$user_id}', 
       '{$row['review']}', 
       '{$row['status']}', 
-      '{$date}', 
+      '{$rev_date}', 
       '{$row['subject']}', 
       '{$row['rating']}'
       )
@@ -254,7 +258,16 @@
 
   // import links now
 
-  $query = "select * from idx_link";
+  // fasten the process
+  $query = "ALTER TABLE `lep_user` ADD UNIQUE `username` ( `username` )";
+  $result = mysql_query($query);
+
+  // $query = "SELECT *
+  //           FROM idx_link AS a, idx_link_user AS b, lep_user AS c
+  //           WHERE a.link_id = b.link_id
+  //           AND c.username = b.username";
+  $query = "SELECT *
+            FROM idx_link";
   $result = mysql_query($query);
 
   while ($row = mysql_fetch_assoc($result)) {
@@ -264,37 +277,63 @@
 
     $query = "INSERT INTO `lep_resource` "; 
 
+    $fields_added = array();
+
     foreach ($idx_fields as $k => $v) {
-      $f_value =  $row[$v];
 
-      if ($v=='keywords') {
-        $f_name = 'tag';
-      }
-      elseif ($v=='contact_name') {
-        $f_name = 'owner_name';
-      }
-      elseif ($v=='date') {
-        $f_name = 'created_at';
-        $f_value = strtotime($v);
-      }
-      else {
-        $f_name = $v;
-      }
+      if (!in_array($v,$fields_added)) {
 
-      $query_fname[] = $f_name;
-      $query_fval[]  = "'".addslashes($f_value)."'";
+        $f_value = $row[$v];
+        $f_value = addslashes($row[$v]);
+
+        if ($v=='keywords') {
+          $f_name = 'tag';
+        }
+        elseif ($v=='contact_name') {
+          $f_name = 'owner_name';
+        }
+        elseif ($v=='date') {
+          $f_name = 'created_at';
+          $f_value = strtotime($row[$v]);
+        }
+        elseif ($v=='last_updated') {
+          $f_name = 'created_at';
+          $f_value = strtotime($row[$v]);
+        }
+        else {
+          $f_name = $v;
+        }
+
+        $query_fname[] = $f_name;
+        $query_fval[]  = "'".$f_value."'";
+      }
+      
+      $fields_added[] = $f_name;
     }
+
+    $query_fname[] = 'res_id';
+    $query_fval[] = $row['link_id'];
 
     $query_fname[] = 'category_id';
     $query_fval[] = $row['category_id'];
 
-    if (!$row['hits']) $row['hits'] = 0;
-    
     $query_fname[] = 'hits';
     $query_fval[] = $row['hits'];
 
     $query_fname[] = 'listing_type';
     $query_fval[] = "'basic'";
+
+    $query_fname[] = 'status';
+    $query_fval[] = '1';
+
+    if ($row['suspended']=='') $row['suspended'] = '0';
+
+    $query_fname[] = 'suspended';
+    $query_fval[] = $row['suspended'];
+
+    if (!$row['user_id']) $row['user_id'] = "''";
+    $query_fname[] = 'user_id';
+    $query_fval[] = $row['user_id'];
 
     $query_temp2 = implode(',',$query_fname);
     $query_temp3 = implode(',',$query_fval);
@@ -309,6 +348,152 @@
 
   $debug .= "Link table imported. \n\n";
 
+
+  // import pending
+
+  // $query = "SELECT *
+  //           FROM idx_link_temp AS a, idx_link_temp_user AS b, lep_user AS c
+  //           WHERE a.vid = b.vid
+  //           AND c.username = b.username";
+  $query = "SELECT *
+            FROM idx_link_temp";
+  $result = mysql_query($query);
+
+  while ($row = mysql_fetch_assoc($result)) {
+
+    unset($query_fname);
+    unset($query_fval);
+
+    $query = "INSERT INTO `lep_resource` "; 
+
+    $fields_added = array();
+
+    foreach ($idx_fields as $k => $v) {
+
+      if (!in_array($v,$fields_added)) {
+
+        $f_value = $row[$v];
+        $f_value = addslashes($row[$v]);
+
+        if ($v=='keywords') {
+          $f_name = 'tag';
+        }
+        elseif ($v=='contact_name') {
+          $f_name = 'owner_name';
+        }
+        elseif ($v=='date') {
+          $f_name = 'created_at';
+          $f_value = strtotime($row[$v]);
+        }
+        elseif ($v=='last_updated') {
+          $f_name = 'created_at';
+          $f_value = strtotime($row[$v]);
+        }
+        else {
+          $f_name = $v;
+        }
+
+        $query_fname[] = $f_name;
+        $query_fval[]  = "'".$f_value."'";
+      }
+      
+      $fields_added[] = $f_name;
+    }
+
+    if (!$row['link_id']) $row['link_id'] = "null";
+    $query_fname[] = 'res_id';
+    $query_fval[] = $row['link_id'];
+
+    $query_fname[] = 'category_id';
+    $query_fval[] = $row['category_id'];
+
+    $query_fname[] = 'hits';
+    $query_fval[] = $row['hits'];
+
+    $query_fname[] = 'listing_type';
+    $query_fval[] = "'basic'";
+
+    $query_fname[] = 'status';
+    $query_fval[] = '0';
+
+    if ($row['suspended']=='') $row['suspended'] = '0';
+
+    $query_fname[] = 'suspended';
+    $query_fval[] = $row['suspended'];
+
+    if (!$row['user_id']) $row['user_id'] = "''";
+    $query_fname[] = 'user_id';
+    $query_fval[] = $row['user_id'];
+
+    $query_temp2 = implode(',',$query_fname);
+    $query_temp3 = implode(',',$query_fval);
+
+    $query .= "($query_temp2) values ($query_temp3)";
+    $result2 = mysql_query($query);
+
+    ($result2) ? $res = "<span style='color:#00f;'>OK</span>" : $res = "<span style='color:#f00;'>FAILED</span>";
+    
+    $debug .= htmlentities($query) . "... $res \n\n";
+  }
+
+  $debug .= "Pending link table imported. \n\n";
+
+
+  // import active paid listing
+
+  $sp_expire = date('Y-m-d H:i:s');
+  $query = "SELECT * FROM `idx_paid_listing` where paid = '1' and expire > '$sp_expire'";
+  $result = mysql_query($query);
+
+  while ($row = mysql_fetch_assoc($result)) {
+    $expire = strtotime($row['expire']);
+    $query = "update lep_resource set featured = '1', featured_expired = '$expire' where res_id = '{$row['link_id']}'";
+    $result2 = mysql_query($query);
+
+    ($result2) ? $res = "<span style='color:#00f;'>OK</span>" : $res = "<span style='color:#f00;'>FAILED</span>";
+    
+    $debug .= htmlentities($query) . "... $res \n\n";
+  }
+
+  $debug .= "Paid listing imported. \n\n";
+
+  // update page rank
+
+  $query = "  SELECT * FROM `idx_pagerank` WHERE rank != '0'";
+  $result = mysql_query($query);
+
+  while ($row = mysql_fetch_assoc($result)) {
+    $query = "update lep_resource set ss_googlepr = '{$row['rank']}' where res_id = '{$row['link_id']}'";
+    $result2 = mysql_query($query);    
+  }
+
+  $debug .= "GooglePR imported. \n\n";
+
+  // fix email fields :
+
+  // update lep_resource set image = replace(image, "upload_files/", "")
+
+
+  // fix date ~ slow
+  $query = "select * from idx_link";
+  $result = mysql_query($query);
+
+  while ($row = mysql_fetch_assoc($result)) {
+    $created_date = strtotime($row['date']);
+
+    $query = "update lep_resource set created_at = '{$created_date}' where category_id = '{$row['category_id']}' and title = '{$row['title']}'";
+    $result2 = mysql_query($query);
+  }
+
+  $debug .= "Date fixed. \n\n";
+
+  
+  // apply setting
+  
+  $query = "update lep_config set value = '$website_url' where name = 'url'";
+  $result = mysql_query($query);
+
+  $debug .= "Done. \n\n";
   
   // apply setting
   

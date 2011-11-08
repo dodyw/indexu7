@@ -1,6 +1,8 @@
 <?php 
   $db_user = 'root';
-  $db_pass = '';
-  $db_name = 'indexu7_dmoz';
+  $db_pass = 'root';
+  $db_name = 'eric';
   $db_host = 'localhost';  
+
+  $website_url = 'http://localhost/old/eric/'; // ends with slash
 ?>
