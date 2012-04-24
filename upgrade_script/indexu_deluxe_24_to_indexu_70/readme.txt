@@ -43,3 +43,11 @@ If you have any problems or need other indexu version, send me an email at suppo
 NOTE: If you have function_widget.php error, run this query in phpmyadmin
 
 ALTER TABLE  `lep_widget_placement` ADD  `status` CHAR( 1 ) NOT NULL
+
+
+To fix checkbox group:
+
+ALTER TABLE `lep_category_field` CHANGE `type` `type` ENUM( 'inputText', 'inputPassword', 'textarea', 'inputCheckbox', 'inputRadio', 'select', 'selectmulti', 'inputFile', 'richtext', 'date', 'inputCheckboxmulti', 'inputCheckboxDynamic' ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT 'inputText';
+ALTER TABLE `lep_resource_field` CHANGE `type` `type` ENUM( 'inputText', 'inputPassword', 'textarea', 'inputCheckbox', 'inputRadio', 'select', 'selectmulti', 'inputFile', 'richtext', 'date', 'inputCheckboxmulti', 'inputCheckboxDynamic' ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT 'inputText';
+ALTER TABLE `lep_user_field` CHANGE `type` `type` ENUM( 'inputText', 'inputPassword', 'textarea', 'inputCheckbox', 'inputRadio', 'select', 'selectmulti', 'inputFile', 'richtext', 'date', 'inputCheckboxmulti', 'inputCheckboxDynamic' ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT 'inputText';
+ALTER TABLE `lep_comment_field` CHANGE `type` `type` ENUM( 'inputText', 'inputPassword', 'textarea', 'inputCheckbox', 'inputRadio', 'select', 'selectmulti', 'inputFile', 'richtext', 'date', 'inputCheckboxmulti', 'inputCheckboxDynamic' ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT 'inputText';
