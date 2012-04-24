@@ -28,7 +28,9 @@ INSTALLATION
 5) Now the database updated. Use phpmyadmin, edit configuration value in lep_config, edit url field to new location (http://www.domain.tld/). Make sure to add slash.
 
 6) Then reset the admin password to 'admin'. Edit lep_user, edit user 'admin', set the password to 
-   c3284d0f94606de1fd2af172aba15bf3
+   c3284d0f94606de1fd2af172aba15bf3 or run the following sql query:
+
+   UPDATE lep_user SET password = 'c3284d0f94606de1fd2af172aba15bf3' WHERE username ='admin'
    
 7) Login into indexu 7 admin panel. Update the category path (admin panel / categories / update category path).
 
