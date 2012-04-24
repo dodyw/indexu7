@@ -36,3 +36,8 @@ INSTALLATION
 
 
 If you have any problems or need other indexu version, send me an email at support@nicecoder.com
+
+
+NOTE: If you have function_widget.php error, run this query in phpmyadmin
+
+ALTER TABLE  `lep_widget_placement` ADD  `status` CHAR( 1 ) NOT NULL
