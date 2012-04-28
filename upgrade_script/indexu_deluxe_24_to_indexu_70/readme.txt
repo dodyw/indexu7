@@ -40,6 +40,21 @@ INSTALLATION
 If you have any problems or need other indexu version, send me an email at support@nicecoder.com
 
 
+=========
+Important
+=========
+
+In order to keep the database structure updated to the latest version, we need to update the database using phpmyadmin.
+Open /install/fresh.sql, locate: 
+
+/** INDEXU 7.1 **/
+
+Then copy all text below that line until end of line and paste in phpmyadmin. Execute the sql queries at once.
+
+
+
+
+
 NOTE: If you have function_widget.php error, run this query in phpmyadmin
 
 ALTER TABLE  `lep_widget_placement` ADD  `status` CHAR( 1 ) NOT NULL
